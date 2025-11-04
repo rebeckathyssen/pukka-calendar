@@ -6,11 +6,12 @@
       <h1>Pukkas te-julekalender</h1>
       <span class="subtext">2025</span>
     </div>
+    <div class="snow" aria-hidden="true"></div>
   </div>
 
   <div class="teas">
-    <img src="tea.png" alt="teacup" class="teacup" />
-    <img src="tea2.png" alt="teacup" class="teacup2" />
+    <img src="tea.png" alt="teacup" class="teacup cozy-bob1" />
+    <img src="tea2.png" alt="teacup" class="teacup2 cozy-bob2" />
   </div>
 
   <div class="days">
@@ -18,6 +19,7 @@
     <button
       class="day"
       [class.active]="selectedDay() === d"
+      [class.rated]="isDayRatedByNumber(d)"
       (click)="selectDay(d)"
       aria-expanded="{{ selectedDay() === d ? 'true' : 'false' }}"
       aria-label="Åbn dag {{ d }}"
@@ -34,7 +36,7 @@
         <span class="day-badge">Dag {{ selectedDay() }}</span>
 
         <h2 class="tea-title">
-          {{ teaByDay(selectedDay()) }}
+          {{ selectedDay() !== null ? teaByDay(selectedDay()!) : '' }}
         </h2>
 
         @if (!isLoading() && isDayRated()) {
@@ -59,32 +61,31 @@
       </header>
 
       @if (isLoading()) {
-        <!-- Loading spinner -->
-        <div class="spinner-container">
-          <div class="spinner"></div>
-          <p class="loading-text">Henter data...</p>
-        </div>
+      <!-- Loading spinner -->
+      <div class="spinner-container">
+        <div class="spinner"></div>
+        <p class="loading-text">Henter data...</p>
+      </div>
+      } @else { @if (isDayRated()) {
+      <!-- Show saved notes -->
+      <section class="saved-notes">
+        <h3>Dine noter</h3>
+        <p class="notes-text">{{ getSelectedDayEntry()?.notes || 'Ingen noter' }}</p>
+      </section>
       } @else {
-        @if (isDayRated()) {
-          <!-- Show saved notes -->
-          <section class="saved-notes">
-            <h3>Dine noter</h3>
-            <p class="notes-text">{{ getSelectedDayEntry()?.notes || 'Ingen noter' }}</p>
-          </section>
-        } @else {
-          <!-- Show rating form -->
-          <form [formGroup]="form" (ngSubmit)="save()">
-            <label>Rating (1–5)</label>
-            <div class="rating-input">
-              @for (star of [1,2,3,4,5]; track star) {
-              <button
-                type="button"
-                class="star-btn"
-                [class.active]="
-                  form.get('rating')?.value !== null && star <= (form.get('rating')?.value ?? 0)
-                "
-                (click)="form.patchValue({ rating: star })"
-              >
+      <!-- Show rating form -->
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <label>Rating (1–5)</label>
+        <div class="rating-input">
+          @for (star of [1,2,3,4,5]; track star) {
+          <button
+            type="button"
+            class="star-btn"
+            [class.active]="
+              form.get('rating')?.value !== null && star <= (form.get('rating')?.value ?? 0)
+            "
+            (click)="form.patchValue({ rating: star })"
+          >
             ★
           </button>
           }
@@ -105,11 +106,9 @@
           GEM RATING
         </button>
       </form>
-        }
-      }
+      } }
     </section>
-    }
-  }
-</div>
+    } }
+  </div>
 </div>
 <app-footer></app-footer>

@@ -13,7 +13,7 @@ export class CalendarPage {
   private tea = inject(TeaService);
   private fb = inject(FormBuilder);
 
-  dayNumbers = Array.from({ length: 24 }, (_, i) => i + 1);
+  dayNumbers = [3, 7, 12, 21, 6, 13, 23, 14, 20, 10, 16, 2, 15, 1, 18, 19, 5, 8, 9, 11, 22, 4, 24, 17];
   teaNames = [
     'morning berry', // 1
     'lemon, ginger & honey', // 2
@@ -68,13 +68,13 @@ export class CalendarPage {
     { start: '#0c2a36ff', end: '#c2e2f0ff' }, // Dag 24
   ];
 
-  selectedDay = signal<number>(1);
+  selectedDay = signal<number | null>(null);
 
   entries = signal<DayEntry[]>([]);
   isLoading = signal<boolean>(true);
 
   form = this.fb.group({
-    day: [1, [Validators.required]],
+    day: [null as number | null, [Validators.required]],
     teaName: [''],
     rating: [null as number | null, [Validators.min(1), Validators.max(5)]],
     notes: [''],
@@ -84,18 +84,10 @@ export class CalendarPage {
     this.isLoading.set(true);
     await this.tea.ensureAnonLogin();
 
-    // hold valgt dag i form'en
-    this.form.get('day')!.setValue(this.selectedDay());
-
     // subscribe til data
     this.tea.days$().subscribe((rows) => {
-      console.log(rows);
       this.entries.set(rows);
       this.isLoading.set(false);
-      // autoudfyld form hvis der findes data for valgt dag
-      const current = rows.find((r) => r.day === this.selectedDay());
-      if (current) this.form.patchValue(current);
-      else this.form.patchValue({ teaName: '', rating: null, notes: '' });
     });
   }
 
@@ -108,12 +100,14 @@ export class CalendarPage {
   }
 
   async save() {
+    if (this.selectedDay() === null) return;
+    
     const value = this.form.getRawValue() as DayEntry;
     // Always use the tea name from the static array
     await this.tea.saveDay({ 
       ...value, 
-      day: this.selectedDay(),
-      teaName: this.teaByDay(this.selectedDay())
+      day: this.selectedDay()!,
+      teaName: this.teaByDay(this.selectedDay()!)
     });
   }
 
@@ -126,32 +120,42 @@ export class CalendarPage {
     return this.teaColors[d - 1] ?? { start: '#2a6df6', end: '#174dcc', text: '#ffffff' };
   }
 
-  // Helper method to calculate which row a day is in
+  // Helper method to calculate which row a day is in based on its position in dayNumbers array
   getRowForDay(day: number): number {
-    return Math.ceil(day / 3);
+    const index = this.dayNumbers.indexOf(day);
+    if (index === -1) return 0;
+    return Math.floor(index / 3);
   }
 
   // Helper method to check if panel should show after this day
   shouldShowPanelAfterDay(dayIndex: number, day: number): boolean {
+    if (this.selectedDay() === null) return false;
+    
     // Show panel if:
     // 1. This is the last day in a row (every 3rd position) OR it's the last day overall
     // 2. A day is selected
     // 3. The selected day is in the same row as this day
     const isEndOfRow = (dayIndex + 1) % 3 === 0;
-    const isLastDay = day === this.dayNumbers.length;
-    const isSelectedDayInSameRow = this.selectedDay() !== null && 
-                                  this.getRowForDay(this.selectedDay()) === this.getRowForDay(day);
+    const isLastDay = dayIndex === this.dayNumbers.length - 1;
+    const selectedDayIndex = this.dayNumbers.indexOf(this.selectedDay()!);
+    const isSelectedDayInSameRow = Math.floor(selectedDayIndex / 3) === Math.floor(dayIndex / 3);
     
     return (isEndOfRow || isLastDay) && isSelectedDayInSameRow;
   }
 
   // Get the entry for the selected day (if it exists)
   getSelectedDayEntry(): DayEntry | undefined {
+    if (this.selectedDay() === null) return undefined;
     return this.entries().find(entry => entry.day === this.selectedDay());
   }
 
   // Check if the selected day has been rated
   isDayRated(): boolean {
     return this.getSelectedDayEntry() !== undefined;
+  }
+
+  // Check if a specific day has been rated (for showing tea names on buttons)
+  isDayRatedByNumber(day: number): boolean {
+    return this.entries().some(entry => entry.day === day);
   }
 }

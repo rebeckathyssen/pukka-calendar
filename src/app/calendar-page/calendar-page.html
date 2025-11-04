@@ -1,0 +1,115 @@
+<div class="container">
+  <div class="overhead d-flex justify-content-center">
+    <img src="pic1.png" alt="te-julekalender" class="image" />
+    <div class="header text-center">
+      <span class="subtext">Rating af</span>
+      <h1>Pukkas te-julekalender</h1>
+      <span class="subtext">2025</span>
+    </div>
+  </div>
+
+  <div class="teas">
+    <img src="tea.png" alt="teacup" class="teacup" />
+    <img src="tea2.png" alt="teacup" class="teacup2" />
+  </div>
+
+  <div class="days">
+    @for (d of dayNumbers; track d; let i = $index) {
+    <button
+      class="day"
+      [class.active]="selectedDay() === d"
+      (click)="selectDay(d)"
+      aria-expanded="{{ selectedDay() === d ? 'true' : 'false' }}"
+      aria-label="Åbn dag {{ d }}"
+      [style.--active-start]="colorByDay(d).start"
+      [style.--active-end]="colorByDay(d).end"
+    >
+      <span class="day-num">{{ d }}</span>
+      <span class="tea-name">{{ teaByDay(d) }}</span>
+    </button>
+
+    @if (shouldShowPanelAfterDay(i, d)) {
+    <section class="day-panel" role="region" aria-live="polite">
+      <header class="panel-header">
+        <span class="day-badge">Dag {{ selectedDay() }}</span>
+
+        <h2 class="tea-title">
+          {{ teaByDay(selectedDay()) }}
+        </h2>
+
+        @if (!isLoading() && isDayRated()) {
+        <!-- Show existing rating -->
+        <div class="rating-row">
+          <div
+            class="stars"
+            [attr.aria-label]="getSelectedDayEntry()?.rating + ' ud af 5 stjerner'"
+          >
+            @for (star of [1,2,3,4,5]; track star) {
+            <span
+              class="star"
+              [class.full]="star <= (getSelectedDayEntry()?.rating ?? 0)"
+              [class.empty]="star > (getSelectedDayEntry()?.rating ?? 0)"
+              >★</span
+            >
+            }
+          </div>
+          <span class="score">{{ getSelectedDayEntry()?.rating }}.0</span>
+        </div>
+        }
+      </header>
+
+      @if (isLoading()) {
+        <!-- Loading spinner -->
+        <div class="spinner-container">
+          <div class="spinner"></div>
+          <p class="loading-text">Henter data...</p>
+        </div>
+      } @else {
+        @if (isDayRated()) {
+          <!-- Show saved notes -->
+          <section class="saved-notes">
+            <h3>Dine noter</h3>
+            <p class="notes-text">{{ getSelectedDayEntry()?.notes || 'Ingen noter' }}</p>
+          </section>
+        } @else {
+          <!-- Show rating form -->
+          <form [formGroup]="form" (ngSubmit)="save()">
+            <label>Rating (1–5)</label>
+            <div class="rating-input">
+              @for (star of [1,2,3,4,5]; track star) {
+              <button
+                type="button"
+                class="star-btn"
+                [class.active]="
+                  form.get('rating')?.value !== null && star <= (form.get('rating')?.value ?? 0)
+                "
+                (click)="form.patchValue({ rating: star })"
+              >
+            ★
+          </button>
+          }
+        </div>
+
+        <label>Noter</label>
+        <textarea
+          rows="4"
+          formControlName="notes"
+          placeholder="Smag, duft, bryggetid..."
+        ></textarea>
+
+        <button
+          class="rate-btn"
+          type="submit"
+          [disabled]="form.invalid || form.get('rating')?.value === null"
+        >
+          GEM RATING
+        </button>
+      </form>
+        }
+      }
+    </section>
+    }
+  }
+</div>
+</div>
+<app-footer></app-footer>

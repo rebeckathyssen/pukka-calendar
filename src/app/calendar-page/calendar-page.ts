@@ -82,7 +82,6 @@ export class CalendarPage {
 
   async ngOnInit() {
     this.isLoading.set(true);
-    await this.tea.ensureAnonLogin();
 
     // subscribe til data
     this.tea.days$().subscribe((rows) => {

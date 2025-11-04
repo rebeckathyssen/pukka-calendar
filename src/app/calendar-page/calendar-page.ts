@@ -157,4 +157,10 @@ export class CalendarPage {
   isDayRatedByNumber(day: number): boolean {
     return this.entries().some(entry => entry.day === day);
   }
+
+  // Get the rating for a specific day
+  getRatingByDay(day: number): number | null {
+    const entry = this.entries().find(entry => entry.day === day);
+    return entry?.rating ?? null;
+  }
 }

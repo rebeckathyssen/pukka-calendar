@@ -174,6 +174,23 @@
   font-family: 'Playfair', serif;
 }
 
+/* Mini stars below tea name */
+.mini-stars {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05rem;
+  line-height: 1;
+}
+
+.mini-stars span {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.mini-stars span.filled {
+  color: rgba(255, 255, 255, 0.95);
+}
+
 @media (max-width: 380px) {
   .day-num {
     font-size: 1.8rem;

@@ -27,7 +27,16 @@
       [style.--active-end]="colorByDay(d).end"
     >
       <span class="day-num">{{ d }}</span>
-      <span class="tea-name">{{ teaByDay(d) }}</span>
+      <span class="tea-name">
+        {{ teaByDay(d) }}
+        @if (isDayRatedByNumber(d)) {
+          <span class="mini-stars">
+            @for (star of [1,2,3,4,5]; track star) {
+              <span [class.filled]="star <= (getRatingByDay(d) ?? 0)">★</span>
+            }
+          </span>
+        }
+      </span>
     </button>
 
     @if (shouldShowPanelAfterDay(i, d)) {

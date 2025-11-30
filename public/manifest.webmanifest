@@ -1,9 +1,12 @@
 {
-  "name": "pukka-calendar",
-  "short_name": "pukka-calendar",
+  "name": "Pukka Calendar",
+  "short_name": "Pukka",
+  "description": "Din personlige te-julekalender!",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "theme_color": "#f5e6d3",
+  "background_color": "#ffffff",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

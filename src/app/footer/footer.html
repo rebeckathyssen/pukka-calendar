@@ -15,9 +15,12 @@
       </a>
     </div>
 
-     <div class="footer-privacy">
-      Te går bedst sammen med cookies, og ved at bruge denne lille webapp accepterer du, at jeg må sætte én i din browser for at huske, hvilke låger du har åbnet. 🍪<br>
-      Fordi data kun gemmes lokalt, betyder det, at dine data er helt anonyme - men hvis du skifter enhed, browser eller rydder dine cookies, så mister du dine åbninger.    </div> 
+    <div class="footer-privacy">
+      @if (!isInstalled()) {
+        Te går bedst sammen med cookies, og ved at bruge denne lille webapp accepterer du, at jeg må sætte én i din browser for at huske, hvilke låger du har åbnet. 🍪<br>
+        Fordi data kun gemmes lokalt, betyder det, at dine data er helt anonyme - men hvis du skifter enhed, browser eller rydder dine cookies, så mister du dine åbninger.
+      }
+    </div> 
 
   </div>
 </footer>

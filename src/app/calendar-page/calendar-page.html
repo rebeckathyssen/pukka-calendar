@@ -37,7 +37,7 @@
   </div>
 
   <div class="days">
-    @for (d of dayNumbers; track d; let i = $index) {
+    @for (d of dayNumbers; track trackByDay($index, d); let i = $index) {
     <button
       class="day"
       [class.active]="selectedDay() === d"

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { DayEntry, TeaService } from '../services/tea.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Footer } from "../footer/footer";
@@ -8,6 +8,7 @@ import { Footer } from "../footer/footer";
   imports: [ReactiveFormsModule, Footer],
   templateUrl: './calendar-page.html',
   styleUrl: './calendar-page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarPage {
   private tea = inject(TeaService);
@@ -72,6 +73,15 @@ export class CalendarPage {
 
   entries = signal<DayEntry[]>([]);
   isLoading = signal<boolean>(true);
+  
+  // Memoized map of day numbers to entries for faster lookups
+  private entriesMap = computed(() => {
+    const map = new Map<number, DayEntry>();
+    for (const entry of this.entries()) {
+      map.set(entry.day, entry);
+    }
+    return map;
+  });
 
   form = this.fb.group({
     day: [null as number | null, [Validators.required]],
@@ -91,11 +101,28 @@ export class CalendarPage {
   }
 
   selectDay(d: number) {
+    // Only update if the day actually changed
+    if (this.selectedDay() === d) return;
+    
     this.selectedDay.set(d);
-    this.form.patchValue({ day: d });
-    const current = this.entries().find((r) => r.day === d);
-    if (current) this.form.patchValue(current);
-    else this.form.patchValue({ teaName: '', rating: null, notes: '' });
+    const current = this.entriesMap().get(d);
+    
+    // Batch form updates into a single operation
+    if (current) {
+      this.form.patchValue({
+        day: d,
+        teaName: current.teaName ?? '',
+        rating: current.rating ?? null,
+        notes: current.notes ?? ''
+      }, { emitEvent: false });
+    } else {
+      this.form.patchValue({
+        day: d,
+        teaName: '',
+        rating: null,
+        notes: ''
+      }, { emitEvent: false });
+    }
   }
 
   async save() {
@@ -119,13 +146,6 @@ export class CalendarPage {
     return this.teaColors[d - 1] ?? { start: '#2a6df6', end: '#174dcc', text: '#ffffff' };
   }
 
-  // Helper method to calculate which row a day is in based on its position in dayNumbers array
-  getRowForDay(day: number): number {
-    const index = this.dayNumbers.indexOf(day);
-    if (index === -1) return 0;
-    return Math.floor(index / 3);
-  }
-
   // Helper method to check if panel should show after this day
   shouldShowPanelAfterDay(dayIndex: number, day: number): boolean {
     if (this.selectedDay() === null) return false;
@@ -144,8 +164,9 @@ export class CalendarPage {
 
   // Get the entry for the selected day (if it exists)
   getSelectedDayEntry(): DayEntry | undefined {
-    if (this.selectedDay() === null) return undefined;
-    return this.entries().find(entry => entry.day === this.selectedDay());
+    const day = this.selectedDay();
+    if (day === null) return undefined;
+    return this.entriesMap().get(day);
   }
 
   // Check if the selected day has been rated
@@ -155,12 +176,17 @@ export class CalendarPage {
 
   // Check if a specific day has been rated (for showing tea names on buttons)
   isDayRatedByNumber(day: number): boolean {
-    return this.entries().some(entry => entry.day === day);
+    return this.entriesMap().has(day);
   }
 
   // Get the rating for a specific day
   getRatingByDay(day: number): number | null {
-    const entry = this.entries().find(entry => entry.day === day);
+    const entry = this.entriesMap().get(day);
     return entry?.rating ?? null;
+  }
+
+  // TrackBy function for better performance in @for loop
+  trackByDay(index: number, day: number): number {
+    return day;
   }
 }

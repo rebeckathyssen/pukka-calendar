@@ -2,6 +2,8 @@
   position: relative;
   margin: 2rem auto;
   z-index: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .image {
@@ -18,12 +20,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background: linear-gradient(135deg, #f9eadf 0%, #f2dccb 50%, #e6c8ac 100%);
-  padding: 1rem 2.5rem;
+  padding: 0.7rem 2.5rem;
   border-radius: 999px;
   border: 1px solid #efc598;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   white-space: nowrap; /* én linje */
-  line-height: 15px;
+  line-height: 25px;
+  text-align: center;
 }
 
 .subtext {
@@ -39,6 +42,7 @@
   font-size: 1.8rem;
   margin: 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
 }
 
 .teas {
@@ -94,6 +98,8 @@
   padding: 0;
   overflow: hidden; /* sikrer fade korrekt */
   transition: box-shadow 0.15s ease, transform 0.15s ease, background 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 /* Hover/focus styling */
@@ -303,6 +309,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .rate-btn:hover {
   transform: translateY(-1px);
@@ -318,6 +326,7 @@
   display: grid;
   gap: 1rem;
   margin-top: 1rem;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .day-panel label {
@@ -341,6 +350,8 @@
   cursor: pointer;
   transition: color 0.2s ease, transform 0.1s ease;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .star-btn:hover {
@@ -352,7 +363,6 @@
 }
 
 .day-panel textarea {
-  width: 100%;
   padding: 0.75rem;
   border: 1px solid #e8c5ab;
   border-radius: 0.5rem;

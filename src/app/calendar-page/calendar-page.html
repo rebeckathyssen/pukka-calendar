@@ -1,8 +1,15 @@
 <div class="container">
-  <div class="overhead d-flex justify-content-center">
-    <img src="pic1.png" alt="te-julekalender" class="image" />
-    <div class="header text-center">
-      <span class="subtext">Rating af</span>
+  <div class="overhead">
+    <img
+  src="/pic1-300.webp"
+  width="300" height="300"
+  alt="te-julekalender"
+  fetchpriority="high"
+  srcset="/pic1-300.webp 300w, /pic1-600.webp 600w"
+  sizes="(max-width: 640px) 50vw, 300px" />
+
+    <div class="header">
+      <span class="subtext">Bedømmelse af</span>
       <h1>Pukkas te-julekalender</h1>
       <span class="subtext">2025</span>
     </div>
@@ -10,8 +17,23 @@
   </div>
 
   <div class="teas">
-    <img src="tea.png" alt="teacup" class="teacup cozy-bob1" />
-    <img src="tea2.png" alt="teacup" class="teacup2 cozy-bob2" />
+    <img
+  src="/tea-120.webp"
+  width="120" height="120"
+  alt="teacup"
+  class="teacup cozy-bob1"
+  loading="lazy" decoding="async"
+  srcset="/tea-120.webp 120w, /tea-240.webp 240w"
+  sizes="120px" />
+
+<img
+  src="/tea2-120.webp"
+  width="120" height="120"
+  alt="teacup"
+  class="teacup2 cozy-bob2"
+  loading="lazy" decoding="async"
+  srcset="/tea2-120.webp 120w, /tea2-240.webp 240w"
+  sizes="120px" />
   </div>
 
   <div class="days">
@@ -30,11 +52,11 @@
       <span class="tea-name">
         {{ teaByDay(d) }}
         @if (isDayRatedByNumber(d)) {
-          <span class="mini-stars">
-            @for (star of [1,2,3,4,5]; track star) {
-              <span [class.filled]="star <= (getRatingByDay(d) ?? 0)">★</span>
-            }
-          </span>
+        <span class="mini-stars">
+          @for (star of [1,2,3,4,5]; track star) {
+          <span [class.filled]="star <= (getRatingByDay(d) ?? 0)">★</span>
+          }
+        </span>
         }
       </span>
     </button>
@@ -42,7 +64,7 @@
     @if (shouldShowPanelAfterDay(i, d)) {
     <section class="day-panel" role="region" aria-live="polite">
       <header class="panel-header">
-        <span class="day-badge">Dag {{ selectedDay() }}</span>
+        <span class="day-badge">{{ selectedDay() }}. december</span>
 
         <h2 class="tea-title">
           {{ selectedDay() !== null ? teaByDay(selectedDay()!) : '' }}
@@ -84,7 +106,7 @@
       } @else {
       <!-- Show rating form -->
       <form [formGroup]="form" (ngSubmit)="save()">
-        <label>Rating (1–5)</label>
+        <label>Bedømmelse (1–5)</label>
         <div class="rating-input">
           @for (star of [1,2,3,4,5]; track star) {
           <button
@@ -112,7 +134,7 @@
           type="submit"
           [disabled]="form.invalid || form.get('rating')?.value === null"
         >
-          GEM RATING
+          GEM BEDØMMELSE
         </button>
       </form>
       } }
@@ -120,4 +142,5 @@
     } }
   </div>
 </div>
-<app-footer></app-footer>
+
+ <app-footer></app-footer> 

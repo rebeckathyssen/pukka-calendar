@@ -33,15 +33,12 @@
 .install-message {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
 
   strong {
     display: block;
-    font-size: clamp(0.9rem, 4vw, 1.1rem);
+    font-size: clamp(0.85rem, 3.5vw, 1.1rem);
     margin-bottom: 0.25rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.2;
   }
 
   p {
@@ -51,6 +48,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
 }
 

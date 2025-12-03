@@ -1,7 +1,8 @@
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
-  provideZonelessChangeDetection, isDevMode,
+  provideZonelessChangeDetection,
+  isDevMode,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -18,20 +19,19 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideFirebaseApp(() =>
       initializeApp({
-        projectId: 'pukka-calendar',
-        appId: '1:565371385387:web:7b0e5674f9b81943f69c6e',
-        storageBucket: 'pukka-calendar.firebasestorage.app',
-        apiKey: 'AIzaSyAC0ckyIBpLEqVa1HjsRl7kkRN5rvq_4CM',
-        authDomain: 'pukka-calendar.firebaseapp.com',
-        messagingSenderId: '565371385387',
-        measurementId: 'G-M2PHEETB9C',
+        apiKey: 'AIzaSyCSL41qmMcCe7JcNDjDaZt5kash7ayS8oc',
+        authDomain: 'te-julekalender.firebaseapp.com',
+        projectId: 'te-julekalender',
+        storageBucket: 'te-julekalender.firebasestorage.app',
+        messagingSenderId: '986562278090',
+        appId: '1:986562278090:web:93e201044b928cdb1afa33',
       })
     ),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
 };

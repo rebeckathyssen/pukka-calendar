@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "pukka-calendar"
-  }
+    "default": "te-julekalender"
+  },
+  "targets": {},
+  "etags": {}
 }

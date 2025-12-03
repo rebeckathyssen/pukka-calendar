@@ -1,6 +1,6 @@
 {
-  "name": "Pukka Calendar",
-  "short_name": "Pukka",
+  "name": "Te-julekalender",
+  "short_name": "Te-julekalender",
   "description": "Din personlige te-julekalender!",
   "display": "standalone",
   "scope": "./",

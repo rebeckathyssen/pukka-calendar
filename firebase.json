@@ -1,16 +1,15 @@
 {
   "hosting": {
     "public": "dist/pukka-calendar/browser",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "headers": [
       {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
+        "source": "/manifest.webmanifest",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      },
+      { "source": "/ngsw.json", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "/ngsw-worker.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+    ],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }]
   }
 }

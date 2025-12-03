@@ -1,15 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-install-prompt',
+  imports: [],
   templateUrl: './install-prompt.html',
   styleUrl: './install-prompt.scss',
 })
-export class InstallPromptComponent {
+export class InstallPromptComponent implements OnInit {
   showPrompt = signal(false);
   deferredPrompt: any = null;
 
-  constructor() {
+  ngOnInit() {
     this.checkInstallability();
   }
 
